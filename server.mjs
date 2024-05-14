@@ -46,28 +46,28 @@ app.get("/*", (_, res) => {
     res.sendFile(filePath);
 });
 
-app.get("/api/about", async (_, res) => {
+app.get("/api/about", (_, res) => {
     fetch('https://api.spacexdata.com/v3/info')
         .then(response => response.json())
         .then(data => res.send(data))
         .catch(error => console.log(error));
 });
 
-app.get("/api/history", async (_, res) => {
+app.get("/api/history", (_, res) => {
     fetch('https://api.spacexdata.com/v3/history')
         .then(response => response.json())
         .then(data => res.send(data))
         .catch(error => console.log(error));
 });
 
-app.get("/api/rockets", async (_, res) => {
+app.get("/api/rockets", (_, res) => {
     fetch('https://api.spacexdata.com/v3/rockets')
         .then(response => response.json())
         .then(data => res.send(data))
         .catch(error => console.log(error));
 });
 
-app.get("/api/roadster", async (_, res) => {
+app.get("/api/roadster", (_, res) => {
     fetch('https://api.spacexdata.com/v3/roadster')
         .then(response => response.json())
         .then(data => res.send(data))

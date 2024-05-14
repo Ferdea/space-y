@@ -1,3 +1,5 @@
+import {response} from "express";
+
 export class Client {
     /**
      * Должен возвращать имя пользователя или null
@@ -66,7 +68,25 @@ export class Client {
      * @return {Promise<About>}
      * */
     async getInfo() {
-        throw new Error("Not implemented");
+        return new Promise((resolve, reject) => {
+            resolve(fetch('api/about', {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    resolve({
+                        founder: data['founder'],
+                        founded: data['founded'],
+                        employees: data['employees'],
+                        ceo: data['ceo'],
+                        coo: data['coo'],
+                        cto: data['cto'],
+                        valuation: data['valuation'],
+                        headquarters: data['headquarters'],
+                        summary: data['summary'],
+                    });
+                }));
+        });
     }
 
     /**
