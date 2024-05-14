@@ -13,15 +13,16 @@ const app = express();
 app.use(express.static('spa/build'));
 
 app.get("/client.mjs", (_, res) => {
-  res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
-  res.sendFile(path.join(rootDir, "client.mjs"), {
-    maxAge: -1,
-    cacheControl: false,
-  });
+    res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+    res.sendFile(path.join(rootDir, "client.mjs"), {
+        maxAge: -1,
+        cacheControl: false,
+    });
 });
 
-app.get("/", (_, res) => {
-  res.send(":)");
+app.get("/*", (_, res) => {
+    const filePath = path.resolve(rootDir, "spa/build/index.html");
+    res.sendFile(filePath);
 });
 
 https
@@ -33,5 +34,5 @@ https
         app
     )
     .listen(port, () => {
-  console.log(`App listening on port ${port}`);
+    console.log(`App listening on port ${port}`);
 });
