@@ -37,8 +37,6 @@ app.get("/api/users/me", (req, res) => {
 });
 
 app.post("/api/users/login", (req, res) => {
-    console.log(req.body);
-
     res.cookie("username", req.body.username, {
         maxAge: 3600000000,
         httpOnly: true,
