@@ -10,8 +10,6 @@ const rootDir = process.cwd();
 const port = 3000;
 const app = express();
 
-let usernameDb = null;
-
 app.use(express.static('spa/build'));
 
 app.use(express.json());
@@ -25,25 +23,31 @@ app.get("/client.mjs", (_, res) => {
     });
 });
 
-app.get("/api/users/me", (_, res) => {
-    res.send(JSON.stringify({
-        username: usernameDb,
-    }));
+app.get("/api/users/me", (req, res) => {
+    let username = req.cookies.username;
+
+    if (username) {
+        res.send(JSON.stringify({
+            username: username,
+        }));
+    } else {
+        res.send(JSON.stringify({
+            username: null,
+        }));
+    }
 });
 
 app.post("/api/users/login", (req, res) => {
-    usernameDb = req.body.username;
-    res.ok;
+    res.cookie("username", req.body.username, {
+        maxAge: 60,
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict"
+    });
 });
 
 app.post("/api/users/logout", (_, res) => {
-    usernameDb = null;
-    res.ok;
-});
-
-app.get("/*", (_, res) => {
-    const filePath = path.resolve(rootDir, "spa/build/index.html");
-    res.sendFile(filePath);
+    res.clearCookie("username");
 });
 
 app.get("/api/about", (_, res) => {
@@ -74,14 +78,19 @@ app.get("/api/roadster", (_, res) => {
         .catch(error => console.log(error));
 });
 
+app.get("/*", (_, res) => {
+    const filePath = path.resolve(rootDir, "spa/build/index.html");
+    res.sendFile(filePath);
+});
+
 https
     .createServer(
         {
-          key: fs.readFileSync('certs/server.key'),
-          cert: fs.readFileSync('certs/server.cert')
+            key: fs.readFileSync('certs/server.key'),
+            cert: fs.readFileSync('certs/server.cert')
         },
         app
     )
     .listen(port, () => {
-    console.log(`App listening on port ${port}`);
-});
+        console.log(`App listening on port ${port}`);
+    });

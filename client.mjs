@@ -13,7 +13,13 @@ export class Client {
         });
 
         let json = await result.json();
-        return json.get("username");
+        let username = json["username"];
+
+        if (username) {
+            return username;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -28,11 +34,12 @@ export class Client {
             username: username,
         });
 
-        await fetch("/api/users/login", {
+        let result = await fetch("/api/users/login", {
             method: "POST",
             body: json,
-        })
+        });
 
+        document.cookie = result.headers["set-cookie"];
         return username;
     }
 
@@ -42,7 +49,7 @@ export class Client {
      * @return {void}
      * */
     async logoutUser() {
-        await fetch("/api/users/logout", {
+        let result = await fetch("/api/users/logout", {
             method: "POST"
         });
     }
