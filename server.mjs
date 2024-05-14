@@ -10,7 +10,12 @@ const rootDir = process.cwd();
 const port = 3000;
 const app = express();
 
+let usernameDb = null;
+
 app.use(express.static('spa/build'));
+
+app.use(express.json());
+app.use(cookieParser());
 
 app.get("/client.mjs", (_, res) => {
     res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -18,6 +23,22 @@ app.get("/client.mjs", (_, res) => {
         maxAge: -1,
         cacheControl: false,
     });
+});
+
+app.get("/api/users/me", (_, res) => {
+    res.send(JSON.stringify({
+        username: usernameDb,
+    }));
+});
+
+app.post("/api/users/login", (req, res) => {
+    usernameDb = req.body.username;
+    res.ok;
+});
+
+app.post("/api/users/logout", (_, res) => {
+    usernameDb = null;
+    res.ok;
 });
 
 app.get("/*", (_, res) => {
