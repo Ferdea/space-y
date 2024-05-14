@@ -1,3 +1,5 @@
+import {response} from "express";
+
 export class Client {
     /**
      * Должен возвращать имя пользователя или null
@@ -32,6 +34,8 @@ export class Client {
             username: username,
         });
 
+        console.log(json);
+
         let result = await fetch("/api/users/login", {
             method: "POST",
             body: json,
@@ -50,6 +54,8 @@ export class Client {
         let result = await fetch("/api/users/logout", {
             method: "POST"
         });
+
+        document.cookie = result.headers["set-cookie"];
     }
 
     /**

@@ -11,9 +11,8 @@ const port = 3000;
 const app = express();
 
 app.use(express.static('spa/build'));
-
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json());
 
 app.get("/client.mjs", (_, res) => {
     res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -38,16 +37,21 @@ app.get("/api/users/me", (req, res) => {
 });
 
 app.post("/api/users/login", (req, res) => {
+    console.log(req.body);
+
     res.cookie("username", req.body.username, {
-        maxAge: 60,
+        maxAge: 3600000000,
         httpOnly: true,
         secure: true,
         sameSite: "strict"
     });
+
+    res.send();
 });
 
 app.post("/api/users/logout", (_, res) => {
     res.clearCookie("username");
+    res.send();
 });
 
 app.get("/api/about", (_, res) => {
