@@ -1,5 +1,3 @@
-import {response} from "express";
-
 export class Client {
     /**
      * Должен возвращать имя пользователя или null

@@ -41,11 +41,6 @@ app.post("/api/users/logout", (_, res) => {
     res.ok;
 });
 
-app.get("/*", (_, res) => {
-    const filePath = path.resolve(rootDir, "spa/build/index.html");
-    res.sendFile(filePath);
-});
-
 app.get("/api/about", (_, res) => {
     fetch('https://api.spacexdata.com/v3/info')
         .then(response => response.json())
@@ -72,6 +67,11 @@ app.get("/api/roadster", (_, res) => {
         .then(response => response.json())
         .then(data => res.send(data))
         .catch(error => console.log(error));
+});
+
+app.get("/*", (_, res) => {
+    const filePath = path.resolve(rootDir, "spa/build/index.html");
+    res.sendFile(filePath);
 });
 
 https
