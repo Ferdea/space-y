@@ -1,5 +1,3 @@
-import {response} from "express";
-
 export class Client {
     /**
      * Должен возвращать имя пользователя или null
@@ -79,25 +77,23 @@ export class Client {
      * @return {Promise<About>}
      * */
     async getInfo() {
-        return new Promise((resolve, reject) => {
-            resolve(fetch('api/about', {
-                method: 'GET'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    resolve({
-                        founder: data['founder'],
-                        founded: data['founded'],
-                        employees: data['employees'],
-                        ceo: data['ceo'],
-                        coo: data['coo'],
-                        cto: data['cto'],
-                        valuation: data['valuation'],
-                        headquarters: data['headquarters'],
-                        summary: data['summary'],
-                    });
-                }));
+        let result = await fetch('api/about', {
+            method: 'GET'
         });
+
+        let json = await result.json();
+
+        return {
+            founder: json['founder'],
+            founded: json['founded'],
+            employees: json['employees'],
+            ceo: json['ceo'],
+            coo: json['coo'],
+            cto: json['cto'],
+            valuation: json['valuation'],
+            headquarters: json['headquarters'],
+            summary: json['summary'],
+        }
     }
 
     /**
@@ -110,7 +106,19 @@ export class Client {
      * @return {Promise<EventBrief[]>}
      * */
     async getHistory() {
-        throw new Error("Not implemented");
+        let result = await fetch('api/history', {
+            method: 'GET'
+        });
+
+        let json = await result.json();
+        return json.map(
+            e => {
+                return {
+                    id: e['id'],
+                    title: e['title'],
+                }
+            }
+        );
     }
 
     /**
@@ -127,7 +135,26 @@ export class Client {
      * @return {Promise<EventFull>}
      * */
     async getHistoryEvent(id) {
-        throw new Error("Not implemented");
+        let result = await fetch('api/history', {
+            method: 'GET'
+        });
+
+        let json = await result.json();
+
+        let found = null
+        for (let e of json) {
+            if (e['id'] === id) {
+                found = json;
+            }
+        }
+
+        return {
+            id: found['id'],
+            title: found['title'],
+            event_date_utc: found['event_date_utc'],
+            details: found['details'],
+            links: found['links'],
+        }
     }
 
     /**
